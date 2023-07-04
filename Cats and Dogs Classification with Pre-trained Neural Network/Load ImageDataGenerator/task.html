@@ -1,0 +1,30 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>Image data are very high-dimensional. To perform an image classification task with the standard feedforward neural network on a colored 100 by 100 image with three channels (RGB), you need to flatten the image to get 30,000 (<span class="math-tex">\(= 100 • 100 • 3\)</span>) features. Machine learning algorithms suffer from the curse of dimensionality. So, a massive amount of image data is needed to train a machine learning model with good performance using the standard fully connected neural network.</p>
+<p><strong>Convolutional Neural Networks</strong> (CNN) use convolutional and pooling layers to help reduce the spatial dimensions of the output from previous layers, resulting in a lower-resolution representation of the image data. So, significantly fewer image data is required to train a CNN to perform well compared to the standard neural network. In the <a href="https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html" rel="noopener noreferrer nofollow" target="_blank">Building powerful image classification models using very little data</a> tutorial by the Keras Blog, a CNN was trained with just 2000 images of cats and dogs with an accuracy of 80%.</p>
+<p>This is <strong>a binary classification task</strong>, and an accuracy of 80% may not be good enough. We can improve the performance of our model by training on a larger dataset. However, we will need a lot of resources, which we may not have — collecting the data is time-consuming, and paying for data annotation can get very expensive. Even if we have a large, well-labeled dataset, we may not have the computational resources needed.</p>
+<p>We can make the best use of a<strong> pre-trained neural network</strong> to get better accuracy. In this project, we will use the VGG16 model that was pre-trained on the ImageNet dataset. The images used to train this model were preprocessed. We must use the same preprocessing steps to train our model. The preprocessing steps for the VGG16 are saved in <code class="java">tensorflow.keras.applications.vgg16.preprocess_input</code>. In our setup, we will use 500 training images: 250 per class. Additionally, we will use 200 images (100 per class) as validation data to evaluate our model during training, and 50 images in our test set for the final evaluation when the training stage is done.</p>
+<p>We have automated the data download process in the <em>.py</em> file provided to you. However, if that is inconvenient, please <a href="https://www.dropbox.com/s/jgv5zpw41ydtfww/cats-and-dogs-images.zip?dl=1" rel="noopener noreferrer nofollow" target="_blank">download the datasets</a> and unzip them in the <code class="java">Data</code> directory.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, load the train, validation, and test <a href="https://www.tensorflow.org/api_docs/python/tf/keras/preprocessing/image/ImageDataGenerator" rel="noopener noreferrer nofollow" target="_blank">ImageDataGenerators</a>. Your program should:</p>
+<ol>
+<li>Import <code class="java">preprocess_input</code> from <code class="java">tensorflow.keras.applications.vgg16</code></li>
+<li>Import <code class="java">ImageDataGenerator</code> from <code class="java">tensorflow.keras.preprocessing.image</code></li>
+<li>Set the <code class="java">preprocessing_function</code> parameter of <code class="java">ImageDataGenerator</code> to <code class="java">preprocess_input</code></li>
+<li>Generate training, validation, and test sets with the <code class="java">flow_from_directory</code> method of <code class="java">ImageDataGenerator</code> that was previously instantiated:
+	<ul>
+<li>Set the <code class="java">target_size</code> variable to an image height and an image width of <code class="java">150</code> for all three sets</li>
+<li>For the training and validation sets, set the <code class="java">batch_size</code> parameter to <code class="java">64</code>, the <code class="java">class_mode</code> parameter to <code class="java">categorical</code>, and the <code class="java">directory</code> parameter to the path to their respective directories: <code class="java">../Data/train</code> and <code class="java">../Data/valid</code>.</li>
+<li>For the test set, set the <code class="java">directory</code> parameter to the path <code class="java">../Data/</code>, <code class="java">classes</code> parameter to <code class="java">['test']</code>, and the <code class="java">shuffle</code> parameter to <code class="java">False</code>.</li>
+<li>Instantiate the data sets in the following order: training, validation, then test</li>
+</ul>
+</li>
+<li>Print the height and width of the images, the chosen batch size, and the test data generator shuffle (<code class="java">test_data_generator.shuffle</code>) parameter value in this exact order separated with a space.</li>
+</ol>
+<h5 id="examples">Examples </h5>
+<p><em>Output:</em></p>
+<pre><code class="language-no-highlight">Found 600 images belonging to 2 classes.
+Found 300 images belonging to 2 classes.
+Found 100 images belonging to 1 classes.
+200 200 64 False</code></pre>
+</div>

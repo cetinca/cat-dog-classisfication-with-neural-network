@@ -1,0 +1,29 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>Congratulations! You have found a combination of hyperparameters that improved the model's performance.</p>
+<p>In this stage, we invite you to play around with the model and try to further improve its performance by <strong>fine-tuning</strong> it.</p>
+<p>The inner layers of a CNN detect complex and abstract features, while the outer layers detect more high-level features relevant to the task at hand. Fine-tuning involves training only the last few layers of the model while keeping the earliest layers that have learned more general features fixed.</p>
+<p>Our model has learned features that are relevant to the current classification task. The goal of fine-tuning is to better fit the task by making small, graduate adjustments to the weights and this is achieved by training with a low learning rate. </p>
+<p>We can access all the layers of the model in the following attribute:</p>
+<pre><code class="language-python">model.layers</code></pre>
+<p>Since the VGG16 layer comes before the dense layer, <code class="language-python">model.layers[0]</code> is the VGG16 layer. It consists of several layers as well (recall the scheme in stage 2). And <code class="language-python">model.layers[0].layers</code> returns all the layers in it in the order they were stacked.</p>
+<p>In the previous stages, we set <code class="language-python">model.layers[0].trainable = False</code>. To apply fine-tuning, we have to iterate through the last few layers, <code class="language-python">n</code>, and make them trainable: </p>
+<pre><code class="language-python">for layer in model.layers[0].layers[-n:]:
+    layer.trainable = True</code></pre>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, fine-tune the model from the previous stage and save it. Your program should:</p>
+<ol>
+<li>Load <code class="language-python">stage_four_model.h5</code> from <code class="language-python">SavedModels</code> directory</li>
+<li>Find out the optimal value of <code class="language-python">n</code> and make <code class="language-python">n</code> last few layers trainable by setting <code class="language-python">layer.trainable=True</code></li>
+<li>Use the train, validation, and test sets that resulted in the best model's performance in the previous stage</li>
+<li>Set the <code class="language-python">learning_rate</code> to a value of <code class="language-python">1e-5</code></li>
+<li>Fit and evaluate the base model on the train and validation sets</li>
+<li>Make predictions on the test set using the <code class="language-python">predict</code> method</li>
+<li>Save the predictions as a <code class="language-python">pickle</code> file named <code class="language-python">stage_five_history</code> in the <code class="language-python">SavedHistory</code> directory</li>
+</ol>
+<p>The goal of this stage is to ensure that your fine-tuned model performs on the test set with at least 95% accuracy.</p>
+<p></p><div class="alert alert-warning">Training the model at this stage may take some time (it took us around 20 min). You can increase your computational power with <a href="https://colab.research.google.com/notebooks/gpu.ipynb" rel="noopener noreferrer nofollow" target="_blank">google colab's GPU</a>. You can fine-tune and train your model there, then make a prediction on the test set, save it as a <code class="language-python">pickle</code> file named <code class="language-python">stage_five_history</code>, and, finally, put it in the <code class="language-python">SavedHistory</code> directory in your PyCharm project. After that press <code class="language-python">Check</code> button to launch the tests.</div>
+<h5 id="examples">Examples</h5>
+<p>Output:</p>
+<p><em>The stage_five_history file containing the predictions of the fine-tuned model</em></p>
+</div>

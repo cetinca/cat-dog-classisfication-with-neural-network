@@ -1,0 +1,35 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>In the previous stages, we set some values for the parameters called <strong>hyperparameters</strong>. These parameter values control the learning process and determine the model's performance.</p>
+<p>The hyperparameter values that we set include:</p>
+<ul>
+<li>Image height is <code class="java">150</code></li>
+<li>Image width is <code class="java">150</code></li>
+<li><code class="java">epochs</code> is <code class="java">5</code></li>
+<li><code class="java">learning_rate</code> is <code class="java">1e-3</code></li>
+<li><code class="java">batch_size</code> is <code class="java">64</code></li>
+</ul>
+<p>We also assumed that the top layer of our stacked model contains only a single Dense layer. These settings may not be the ones that optimize our model's performance.</p>
+<p>In this stage, find the hyperparameter values that will give an accuracy of more than 92% on the test set. There are hyperparameter optimization packages like <a href="https://optuna.org/" rel="noopener noreferrer nofollow" target="_blank">Optuna</a> that do the job automatically, but we suggest you experience how hyperparameter search works by going through possible combinations of the parameter values manually (or by implementing your tool :). </p>
+<p>You can optimize more hyperparameters and/or reconfigure the model's top layer by adding more Dense layers. You can even try more advanced techniques like using <a href="https://towardsdatascience.com/regularization-techniques-and-their-implementation-in-tensorflow-keras-c06e7551e709" rel="noopener noreferrer nofollow" target="_blank">regularization</a> and <a href="https://keras.io/api/layers/regularization_layers/dropout/" rel="noopener noreferrer nofollow" target="_blank">dropout</a> techniques to get even better performance. But at this stage, you are guaranteed to get an accuracy of more than 92% if you search the following solution space, keeping the other hyperparameters constant:</p>
+<ul>
+<li>Image height: <code class="java">150</code>, <code class="java">200</code>, <code class="java">224</code></li>
+<li>Image width: <code class="java">150</code>, <code class="java">200</code>, <code class="java">224</code></li>
+<li><code class="java">batch_size</code>: <code class="java">16</code>, <code class="java">32</code>, <code class="java">64</code></li>
+</ul>
+<p>Note that you'll need to generate new training, validation, and test sets in the same manner you did in the first stage changing only some of the parameter values.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, train, evaluate, and test your model several times by iterating over a combination of the hyperparameter values to get the model with the best performance. Your program should:</p>
+<ol>
+<li>Generate train, validation, and test sets with <code class="java">ImageDataGenerator</code> tool</li>
+<li>Create the base model</li>
+<li>Fit and evaluate the base model with the train and validation sets</li>
+<li>Save the best model as <code class="java">stage_four_model.h5</code> in the <code class="java">SavedModels</code> directory</li>
+<li>Make predictions on the test set with the <code class="java">predict</code> method</li>
+<li>Save the predictions as a <code class="java">pickle</code> file named <code class="java">stage_four_history</code> in the <code class="java">SavedHistory</code> directory</li>
+</ol>
+<p>The goal of this stage is to ensure that your best model performs on the test set with at least 92% accuracy. </p>
+<h5 id="examples">Examples</h5>
+<p>Output:</p>
+<p><em>The stage_four_history file containing the predictions of the best model</em></p>
+</div>

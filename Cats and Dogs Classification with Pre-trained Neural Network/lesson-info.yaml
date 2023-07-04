@@ -1,0 +1,8 @@
+type: framework
+content:
+- Load ImageDataGenerator
+- Train the base model
+- Predict with the base model
+- Hyperparameters tuning
+- Fine-tuning your model
+current_task: 4

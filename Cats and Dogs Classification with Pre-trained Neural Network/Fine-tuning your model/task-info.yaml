@@ -1,0 +1,104 @@
+type: edu
+files:
+- name: transfer.py
+  visible: true
+  text: |
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    import requests
+    from zipfile import ZipFile
+    import sys
+
+    if __name__ == '__main__':
+
+        if not os.path.exists('../Data'):
+            os.mkdir('../Data')
+
+        # if not os.path.exists('../ImageData'):
+        #     os.mkdir('../ImageData')
+
+        if not os.path.exists('../SavedModels'):
+            os.mkdir('../SavedModels')
+
+        if not os.path.exists('../SavedHistory'):
+            os.mkdir('../SavedHistory')
+
+        # Download data if it is unavailable.
+        if 'cats-and-dogs-images.zip' not in os.listdir('../Data'):
+            sys.stderr.write("[INFO] Image dataset is loading.\n")
+            url = "https://www.dropbox.com/s/jgv5zpw41ydtfww/cats-and-dogs-images.zip?dl=1"
+            r = requests.get(url, allow_redirects=True)
+            open('../Data/cats-and-dogs-images.zip', 'wb').write(r.content)
+            sys.stderr.write("[INFO] Loaded.\n")
+
+            sys.stderr.write("\n[INFO] Extracting files.\n")
+            with ZipFile('../Data/cats-and-dogs-images.zip', 'r') as zip:
+                zip.extractall(path="../Data")
+                sys.stderr.write("[INFO] Completed.\n")
+
+        # write your code here
+  learner_created: false
+- name: test/__init__.py
+  visible: false
+  learner_created: false
+- name: test/tests.py
+  visible: false
+  text: |-
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    import numpy
+
+    from hstest import StageTest, TestCase, CheckResult
+    from hstest.stage_test import List
+    import pickle
+
+    def test_labels():
+        return numpy.array([0] * 25 + [1] * 25)
+
+
+    class UnfreezeTest(StageTest):
+
+        def generate(self) -> List[TestCase]:
+            return [TestCase(time_limit=10000000)]
+
+        def check(self, reply: str, attach):
+
+            if 'stage_five_history' not in os.listdir('../SavedHistory'):
+                return CheckResult.wrong("The file `stage_five_history` is not in SavedHistory directory")
+
+            with open('../SavedHistory/stage_five_history', 'rb') as stage_five:
+                answer = pickle.load(stage_five)
+
+            if not isinstance(answer, numpy.ndarray):
+                return CheckResult.wrong("`stage_five_history` should be a numpy array")
+
+            labels = test_labels()
+            accuracy = labels == answer
+            test_accuracy = accuracy.mean()
+
+            if test_accuracy < 0.95:
+                return CheckResult.wrong(f"Your model's accuracy is {test_accuracy * 100}%\n"
+                                         "The goal is to score at least 95%")
+
+            print(f"Test accuracy: {round(test_accuracy, 3)}")
+            return CheckResult.correct()
+
+
+    if __name__ == '__main__':
+        UnfreezeTest().run_tests()
+  learner_created: false
+- name: tests.py
+  visible: false
+  text: |-
+    from test.tests import UnfreezeTest
+
+    if __name__ == "__main__":
+        UnfreezeTest().run_tests()
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/27997#comment
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">Hyperskill</a>
+    to continue learning.
+  time: "Tue, 04 Jul 2023 18:59:55 UTC"
+record: 5

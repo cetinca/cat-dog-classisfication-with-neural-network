@@ -1,0 +1,8 @@
+https://github.com/hyperskill/hs-test-python/archive/release.tar.gz
+pandas
+requests
+tensorflow
+keras
+matplotlib
+scipy
+pyqt5

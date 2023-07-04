@@ -1,0 +1,55 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>In the previous stage, we instantiated our <code class="language-python">ImageDataGenerator</code> and generated three data sets with it. In this stage, we will learn how these utilities are used to fit pre-trained models.</p>
+<p><strong>Transfer learning</strong> makes the best use of the feature representation of a pre-trained model. A pre-trained model is a saved model previously trained on a large dataset. We can perform transfer learning in two ways:</p>
+<ol>
+<li>Instantiate a base model using one of the pre-trained model architectures. Various pre-trained models are provided in <a href="https://keras.io/api/applications/" rel="noopener noreferrer nofollow" target="_blank">Keras Applications</a>.</li>
+<li>Implement the model architecture from scratch and load the pre-trained weights. You can find an example of how to do so in the <a href="https://medium.com/@mygreatlearning/everything-you-need-to-know-about-vgg16-7315defb5918" rel="noopener noreferrer nofollow" target="_blank">Everything you need to know about VGG16</a> article by Rohini G.</li>
+</ol>
+<p>In this project, we will use the first method with the VGG16 model. Its architecture is shown below:</p>
+<p><img alt="VGG16 model architecture" height="256" name="vgg16-architecture.width-1200.jpg" src="https://ucarecdn.com/ce8de723-fdf6-468b-85c3-2690aa1ae5bd/-/crop/1184x256/0,60/-/preview/" width="1184"/></p>
+<p style="text-align: center;">Figure 1: VGG16 model architecture  Source: <a href="https://www.learndatasci.com/tutorials/hands-on-transfer-learning-keras/" rel="noopener noreferrer nofollow" target="_blank">Learn Data Science</a> </p>
+<p>The intuition behind transfer learning is that a model trained on a huge and general dataset can serve as a generic model. In transfer learning, we take advantage of the features learned by the pre-trained model to train our model which will give good performance with a small amount of data. </p>
+<p>The first step of transfer learning is to import the pre-trained model:</p>
+<pre><code class="language-python">from tensorflow.keras.applications.vgg16 import VGG16</code></pre>
+<p>The second step is to create the base model. <a href="https://keras.io/guides/sequential_model/" rel="noopener noreferrer nofollow" target="_blank">A sequential model</a> helps us conveniently stack the VGG16 layer and a single dense layer together to create the base model:</p>
+<pre><code class="language-python">model = Sequential(
+    [
+        VGG16(
+            include_top=False,
+            pooling='avg',
+            weights='imagenet'),
+        Dense(2, activation='softmax')
+    ]
+)</code></pre>
+<p>The output layer of the VGG16 architecture has up to 1000 output nodes. We are performing a binary classification task and require two output nodes at most. To exclude the output layer of the VGG16 model, set the <code class="language-python">include_top</code> parameter to <code class="language-python">False</code>. We can then add our output layer architecture. For now, it's enough to include a dense layer with two neurons.</p>
+<p><img alt="VGG16 model architecture when include_top=False" height="281" name="transfer-learning-feature-extraction-approach.width-1200.jpg" src="https://ucarecdn.com/51b77d82-87d0-42b0-9345-841b986554fb/" width="1200"/></p>
+<p style="text-align: center;">Figure 2: VGG16 model architecture when <code class="language-python">include_top=False</code>  Source: <a href="https://www.learndatasci.com/tutorials/hands-on-transfer-learning-keras/" rel="noopener noreferrer nofollow" target="_blank">Learn Data Science</a> </p>
+<p>When we talk about making the most of the feature representation of a pre-trained model, we are talking about a model's optimized weights. We need to keep these pre-trained weights during training by freezing them:</p>
+<pre><code class="language-python">model.layers[0].trainable = False</code></pre>
+<p>The final step in creating our base model is the compilation step. Here, we specify the optimizer, loss, and metrics that our model would be trained on. We are working on a classification problem and <code class="language-python">accuracy</code> is our metric. </p>
+<pre><code class="language-python">model.compile(optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+              loss='categorical_crossentropy', metrics=['accuracy'])</code></pre>
+<p>We will use the <a href="https://www.geeksforgeeks.org/intuition-of-adam-optimizer/" rel="noopener noreferrer nofollow" target="_blank">Adam</a> optimizer because it combines the best properties of the two most popular gradient descent optimization algorithms: RMSprop and gradient descent with momentum. Since more than one output neuron is specified and we are solving a classification problem, we would use <code class="language-python">softmax</code> activation and the <code class="language-python">categorical_crossentropy</code> loss. When making predictions our model will output probability values in a matrix with two columns: one referring to the class "cat" encoded as <code class="language-python">0</code> and the other to the class "dog" encoded as <code class="language-python">1</code>. An observation belongs to the class with the highest probability.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, create, train, and save the base model. Your program should:</p>
+<ol>
+<li><a href="https://keras.io/api/models/model_training_apis/#compile-method" rel="noopener noreferrer nofollow" target="_blank">Create</a> the base model with a <code class="language-python">learning_rate</code> of <code class="language-python">1e-3</code></li>
+<li><a href="https://keras.io/api/models/model_training_apis/#fit-method" rel="noopener noreferrer nofollow" target="_blank">Fit</a> the model on the train set and set:
+	<ul>
+<li>The <code class="language-python">epochs</code> parameter to 5</li>
+<li>The <code class="language-python">validation_data</code> parameter to the validation set</li>
+<li>The <code class="language-python">steps_per_epoch</code> parameter to the integer division of the size of the train set over the batch size of 64 as in the previous stage</li>
+<li>The <code class="language-python">validation_steps</code> to the integer division of the size of the validation set over the batch size of 64</li>
+<li>The <code class="language-python">verbose</code> to 1</li>
+</ul>
+</li>
+<li><a href="https://www.tensorflow.org/tutorials/keras/save_and_load#save_the_entire_model" rel="noopener noreferrer nofollow" target="_blank">Save the model</a> in the <code class="language-python">SavedModels</code> directory as <code class="language-python">stage_two_model.h5</code></li>
+<li>Save the model's history (<code class="language-python">History.history</code>) as a <code class="language-python">pickle</code> file named <code class="language-python">stage_two_history</code> in the <code class="language-python">SavedHistory</code> directory. The <code class="language-python">History</code> object is returned by the <code class="language-python">fit</code> method</li>
+</ol>
+<p>Deep learning models tend to overfit the train set. When this happens, there is a large positive difference between the train and validation accuracies. We need to ensure that this difference does not exceed 10%.</p>
+<h5 id="examples">Examples</h5>
+<p><em>If your solution is correct the tests will output two graphs displaying the accuracy and loss values that your model resulted in during the training process. Close the window with graphs to complete the stage check.</em></p>
+<p>Output:</p>
+<p><img alt="Accuracy Plot &amp; Loss Plot" height="663" name="Figure_1.png" src="https://ucarecdn.com/f0eccd29-32db-48f8-a3ed-fed69d04e483/" width="1366"/></p>
+</div>

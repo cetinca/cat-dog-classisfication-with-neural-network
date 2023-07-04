@@ -1,0 +1,121 @@
+type: edu
+files:
+- name: transfer.py
+  visible: true
+  text: |
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    import requests
+    from zipfile import ZipFile
+    import sys
+
+    if __name__ == '__main__':
+
+        if not os.path.exists('../Data'):
+            os.mkdir('../Data')
+
+        # if not os.path.exists('../ImageData'):
+        #     os.mkdir('../ImageData')
+
+        if not os.path.exists('../SavedModels'):
+            os.mkdir('../SavedModels')
+
+        if not os.path.exists('../SavedHistory'):
+            os.mkdir('../SavedHistory')
+
+        # Download data if it is unavailable.
+        if 'cats-and-dogs-images.zip' not in os.listdir('../Data'):
+            sys.stderr.write("[INFO] Image dataset is loading.\n")
+            url = "https://www.dropbox.com/s/jgv5zpw41ydtfww/cats-and-dogs-images.zip?dl=1"
+            r = requests.get(url, allow_redirects=True)
+            open('../Data/cats-and-dogs-images.zip', 'wb').write(r.content)
+            sys.stderr.write("[INFO] Loaded.\n")
+
+            sys.stderr.write("\n[INFO] Extracting files.\n")
+            with ZipFile('../Data/cats-and-dogs-images.zip', 'r') as zip:
+                zip.extractall(path="../Data")
+                sys.stderr.write("[INFO] Completed.\n")
+
+        # write your code here
+  learner_created: false
+- name: test/__init__.py
+  visible: false
+  learner_created: false
+- name: test/tests.py
+  visible: false
+  text: |
+    import os
+    os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+    import numpy
+
+    from hstest import StageTest, TestCase, CheckResult
+    from hstest.stage_test import List
+    import pickle
+
+    def test_labels():
+        return numpy.array([0] * 25 + [1] * 25)
+
+
+    class BaseModelPredictionTest(StageTest):
+
+        def generate(self) -> List[TestCase]:
+            return [TestCase(time_limit=1000000)]
+
+        def check(self, reply: str, attach):
+
+            if 'stage_three_history' not in os.listdir('../SavedHistory'):
+                return CheckResult.wrong("The file `stage_three_history is not in SavedHistory directory")
+
+            if 'stage_two_history' not in os.listdir('../SavedHistory'):
+                return CheckResult.wrong("The file `stage_two_history is not in SavedHistory directory")
+
+            with open('../SavedHistory/stage_two_history', 'rb') as stage_two:
+                history = pickle.load(stage_two)
+
+            with open('../SavedHistory/stage_three_history', 'rb') as stage_three:
+                answer = pickle.load(stage_three)
+
+            if not isinstance(answer, numpy.ndarray):
+                return CheckResult.wrong("`stage_three_history` should be a numpy array")
+
+            labels = test_labels()
+            accuracy = labels == answer
+
+            valid_accuracy = history['val_accuracy'][-1]
+            train_accuracy = history['accuracy'][-1]
+            test_accuracy = accuracy.mean()
+
+            if valid_accuracy - test_accuracy > 0.15:
+                return CheckResult.wrong("The difference between validation and test\n"
+                                         f"accuracies is {valid_accuracy - test_accuracy};\n"
+                                         "The difference should not be more than 15%.")
+
+            if train_accuracy - test_accuracy > 0.15:
+                return CheckResult.wrong("The model is overfitting the train set;\n"
+                                         "The difference between train and test\n"
+                                         f"accuracies is {train_accuracy - test_accuracy}\n"
+                                         "The difference should not be more than 15%.")
+
+            print(f"Test accuracy: {round(test_accuracy, 3)}")
+
+            return CheckResult.correct()
+
+
+    if __name__ == '__main__':
+        BaseModelPredictionTest().run_tests()
+  learner_created: false
+- name: tests.py
+  visible: false
+  text: |
+    from test.tests import BaseModelPredictionTest
+
+    if __name__ == "__main__":
+        BaseModelPredictionTest().run_tests()
+  learner_created: false
+feedback_link: https://hyperskill.org/learn/step/27995#comment
+status: Solved
+feedback:
+  message: Well done! You've finished the project. Select a new project on <a href="https://hyperskill.org/projects">Hyperskill</a>
+    to continue learning.
+  time: "Tue, 04 Jul 2023 18:37:06 UTC"
+record: 3

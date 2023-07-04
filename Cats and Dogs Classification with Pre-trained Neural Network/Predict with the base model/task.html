@@ -1,0 +1,18 @@
+<div class="step-text">
+<h5 id="description">Description</h5>
+<p>We have trained the base model on the training set tracking its performance on the validation set but our goal is to use our model to make predictions. </p>
+<p>In this stage, use the model saved in the previous stage to make predictions on the test set that you generated in the first stage. </p>
+<p>As our model outputs probability values in a two-column matrix (with two probabilities predicted for each observation), use the <code class="java">numpy</code>'s function <code class="java">argmax</code> to get an array of the actual classes (<code class="java">0</code> or <code class="java">1</code>) based on the maximum probability values.</p>
+<h5 id="objectives">Objectives</h5>
+<p>In this stage, make predictions with your base model. Your program should:</p>
+<ol>
+<li>Import <code class="java">load_model</code> from <code class="java">tensorflow.keras.models</code></li>
+<li>Load <code class="java">stage_two_model.h5</code> from <code class="java">SavedModels</code> directory</li>
+<li><a href="https://www.tensorflow.org/api_docs/python/tf/keras/Model#predict" rel="noopener noreferrer nofollow" target="_blank">Make predictions</a> on the test set using the <code class="java">predict</code> method and apply the <code class="java">argmax</code> function</li>
+<li>Save the predictions as a <code class="java">pickle</code> file named <code class="java">stage_three_history</code> in the <code class="java">SavedHistory</code> directory</li>
+</ol>
+<p>Our goal at this stage is to ensure that the difference between the train and test accuracies, and the difference between the validation and test accuracies do not exceed 15%.</p>
+<h5 id="examples">Examples</h5>
+<p>Output:</p>
+<p><em>The stage_three_history file in the SavedHistory directory containing the model predictions</em></p>
+</div>

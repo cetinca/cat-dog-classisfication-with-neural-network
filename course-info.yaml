@@ -1,0 +1,18 @@
+type: hyperskill
+title: Cats and Dogs Classification with Pre-trained Neural Network
+language: English
+summary: "<p>Deep neural networks require a large amount of data and computing power\
+  \ to train them from scratch. Collecting and annotating the data is time-consuming\
+  \ and expensive. Even with the right computer, it may take days and weeks to train\
+  \ a deep-learning model with millions of data points. Big IT companies have trained\
+  \ and optimized deep neural networks on these large datasets, and have made these\
+  \ models available to everyone. You can use these pre-trained models as is or customize\
+  \ them to a specific task with transfer learning. In this project, you will learn\
+  \ how to use pre-trained models and transfer learning to circumvent the data and\
+  \ compute resource challenges in training deep-learning models from scratch.</p><br/><br/>Learn\
+  \ more at <a href=\"https://hyperskill.org/projects/340?utm_source=ide&utm_medium=ide&utm_campaign=ide&utm_content=project-card\"\
+  >https://hyperskill.org/projects/340</a>"
+programming_language: Python
+content:
+- Cats and Dogs Classification with Pre-trained Neural Network
+mode: Study
